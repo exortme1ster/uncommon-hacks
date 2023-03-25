@@ -18,6 +18,10 @@ export const SidebarTournaments = styled.aside`
 export const ShowTournaments = styled.div`
   margin: 0 auto;
   max-width: 1300px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 4.2rem;
 `;
 
 export const TournamentName = styled.button`
@@ -34,4 +38,36 @@ export const TournamentName = styled.button`
   &:hover {
     background-color: var(--gray4);
   }
+`;
+
+export const TournamentDiv = styled.div`
+  padding: 3.2rem 6.4rem 6.4rem 6.4rem;
+
+  border-radius: var(--border-radius-large);
+  background-color: var(--gray5);
+  position: relative;
+`;
+export const TournamentsName = styled.h3`
+  font-size: 4rem;
+  font-weight: 400;
+  color: var(--text-0);
+  padding: 0;
+`;
+export const TournamentPlayers = styled.div`
+  display: flex;
+  gap: 2.4rem;
+  justify-content: center;
+`;
+export const PlayerName = styled.p`
+  color: var(--text-1);
+  font-size: 2.4rem;
+`;
+
+export const TournamentStatus = styled.span<{tStatus?: boolean}>`
+  position: absolute;
+  right: 2%;
+  top: 2%;
+  padding: 1.2rem;
+  background-color: ${(props) =>
+    props.tStatus ? "var(--success)" : "var(--failure)"};
 `;
