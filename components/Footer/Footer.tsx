@@ -27,9 +27,6 @@ const Footer = () => {
               </ContactInfo>
             </ContactInfoContainer>
             <ContactInfoContainer>
-              <ContactInfo>Blessed with the deisgns of Nstkdl</ContactInfo>
-            </ContactInfoContainer>
-            <ContactInfoContainer>
               <ContactInfo>
                 Uncommon Hackathon 2023, March 25th-26th
               </ContactInfo>

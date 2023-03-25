@@ -1,8 +1,43 @@
 import React, { FC } from "react";
-import { TournamentsMain } from "./tournaments.styles";
+import {
+  TournamentsMain,
+  SidebarTournaments,
+  ShowTournaments,
+  TournamentName,
+} from "./tournaments.styles";
 
-const touranement = () => {
-  return <TournamentsMain></TournamentsMain>;
+const tournamentTypes = ["All", "Current", "Recent"];
+const tournaments = [
+  {
+    status: "going",
+  },
+  {
+    status: "going",
+  },
+  {
+    status: "going",
+  },
+  {
+    status: "end",
+  },
+  {
+    status: "end",
+  },
+  {
+    status: "end",
+  },
+];
+const Tournament = () => {
+  return (
+    <TournamentsMain>
+      <SidebarTournaments>
+        {tournamentTypes.map((tournamentName: string, i: number) => (
+          <TournamentName key={i}>{tournamentName}</TournamentName>
+        ))}
+      </SidebarTournaments>
+      <ShowTournaments></ShowTournaments>
+    </TournamentsMain>
+  );
 };
 
-export default touranement;
+export default Tournament;
