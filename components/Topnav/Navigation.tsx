@@ -1,8 +1,7 @@
 import { NavBar, HomePage, Navigation, LinkItem, LinkText } from "./Nav.styles";
 import Link from "next/link";
 import { FC, useState, useEffect } from "react";
-
-const page = ["topic", "two", "three"];
+import { page } from "@/functionality/data";
 
 interface NavigationComponentI {
   isNavBar: boolean;
@@ -27,7 +26,7 @@ const NavigationComponent: FC<NavigationComponentI> = ({
         return (
           <LinkItem key={i}>
             <Link
-              href={"/" + link}
+              href={"/" + link.toLocaleLowerCase()}
               onClick={() => {
                 if (openNavigation !== undefined) openNavigation(false);
               }}

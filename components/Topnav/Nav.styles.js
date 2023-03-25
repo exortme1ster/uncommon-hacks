@@ -5,6 +5,8 @@ export const NavBar = styled.nav`
   display: flex;
   justify-content: space-between;
   padding: 1.2rem;
+  background-color: var(--primary);
+  border-bottom: 2px solid var(--border);
 `;
 
 export const HomePage = styled.div``;
@@ -32,6 +34,16 @@ export const Navigation = styled.ul`
   pointer-events: ${(props) => (props.navigationState ? "auto" : "none")};
   user-select: ${(props) => (props.navigationState ? "auto" : "none")};
  
+  span {
+    font-size: 2.4rem;
+    height: 120%;
+    transition: all .2s;
+  }
+
+  span:hover {
+    box-shadow: inset 0 -2px  var(--brand8);
+    color:  var(--brand8);
+  }
   
 
 `;
@@ -41,7 +53,7 @@ export const LinkItem = styled.li``;
 export const LinkText = styled.span`
   display: inline-block;
   padding: 1.2rem 2.4rem;
-  color: white;
-  font-size: 2.4rem;
-  background-color: orange;
+  color: var(--text-0);
+  font-size: 3.6rem;
+  :
 `;
