@@ -7,6 +7,9 @@ import Nav from "@/components/Topnav/Nav";
 import PopupToast from "@/components/PopupToast/PopupToast";
 import Footer from "@/components/Footer/Footer";
 import Background from "@/components/Background/Background";
+import { use, useEffect, useState } from "react";
+import { supabase } from "@/functionality/supabase";
+import { useRouter } from 'next/router'
 
 export default function App({ Component, pageProps }: AppProps) {
   const main = (
@@ -16,6 +19,52 @@ export default function App({ Component, pageProps }: AppProps) {
       <PopupToast />
     </Background>
   );
+
+  const [session, setSession] = useState(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      // @ts-ignore
+      setSession(session)
+    })
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      // @ts-ignore
+      setSession(session)
+    })
+  }, [])
+
+    // navigate to logout if session is null
+    useEffect(() => {
+      const insertUser = async () => {
+        // get current user
+        const { data: { user } } = await supabase.auth.getUser()
+
+        // check if this user exists
+        let { data: checkExistingUser, error } = await supabase
+        .from('users')
+        .select('*')
+        .match({ user_id: user?.id })
+
+        // if it doesn't exist, add him to users table
+        if( checkExistingUser?.length === 0 ) {
+          const { data, error } = await supabase
+          .from('users')
+          .insert([
+            { 
+              user_id: user?.id, friends: [] },
+          ])
+        }
+      }
+
+      if (session) {
+        router.push('/platform')
+      } else {
+        insertUser();
+        router.push('/')
+      }
+    }, [session])
 
   return (
     <Provider store={store}>
