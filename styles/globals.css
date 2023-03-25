@@ -125,6 +125,10 @@
   padding: 0;
   margin: 0;
 }
+*:not(button),
+*:not(a) {
+  user-select: none;
+}
 
 html,
 body {

@@ -17,6 +17,8 @@ export const HomeTitleDesc = styled.p`
   line-height: 1.5;
   font-size: 2.4rem;
   color: var(--text-1);
+  text-align: center;
+  margin-bottom: 2.4rem;
 `;
 
 export const HomePage = styled.main`
