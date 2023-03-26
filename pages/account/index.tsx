@@ -24,24 +24,6 @@ const Account = () => {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log(session);
-      if (session !== null) {
-        // @ts-ignore
-        setSession(session);
-        dispatch(authUserLogin(session.user));
-      }
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      // @ts-ignore
-      setSession(session);
-
-      dispatch(authUserLogin(session?.user));
-    });
-  }, []);
-
-  useEffect(() => {
     if (user !== undefined) {
       setLoading(true);
       getCurrentUser(user.id).then((response: any) => {
@@ -49,6 +31,7 @@ const Account = () => {
         setLoading(false);
       });
     } else {
+      console.log("user is undefined!")
     }
   }, [session]);
 
