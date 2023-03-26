@@ -52,6 +52,8 @@ export const generateTask = async () => {
       code_solution: data["code_solution"],
       test_cases: data["test_cases"],
     };
+
+    console.log(generatedTask);
     return generatedTask;
   } else {
     return false;

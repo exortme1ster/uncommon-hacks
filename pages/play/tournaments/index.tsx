@@ -56,11 +56,10 @@ const Tournament = () => {
         { event: "INSERT", schema: "public", table: "tournaments" },
         (payload) => {
           console.log(payload);
-          let newArr = tournaments;
+          let newArr = [...tournaments];
           // @ts-ignore
           newArr.push(payload.new);
           setTournaments(newArr);
-          // window.location.reload();
         }
       )
       .subscribe();
@@ -76,7 +75,7 @@ const Tournament = () => {
     getTourneys();
   }, []);
 
-  const tournamentsVar = tournaments
+  let tournamentsVar = tournaments
     .filter((tournament: any) => {
       if (currentTournamentType === "all") {
         return true;

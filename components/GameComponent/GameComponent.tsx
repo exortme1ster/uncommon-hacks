@@ -61,10 +61,9 @@ const GameComponent: FC<GameComponentInterface> = ({
         setLoading(false);
       });
     } else {
-      console.log("LOL");
       getSpecificTournament(tournamentid).then((response: any) => {
         currentTask(response);
-        changeResults(response.tests);
+        changeResults(response.test_cases);
         setLoading(false);
       });
     }
