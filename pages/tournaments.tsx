@@ -39,12 +39,13 @@ export default function Tournaments() {
         </>
       ) : (
         <div>
-          {/* //@ts-ignore */}
           <h1 style={{ color: "white", marginTop: "20px" }}>
+                      {/* @ts-ignore */}
             {tasks[0]?.task}
           </h1>
           {/* @ts-ignore */}
           <h2 style={{ color: "white", marginTop: "20px" }}>
+                      {/* @ts-ignore */}
             {tasks[0]?.function_signature}
           </h2>
         </div>

@@ -81,6 +81,7 @@ export const getAllUsers = async () => {
   } finally {
   }
 };
+
 export const getCurrentUser = async (user_id: any) => {
   try {
     const { data, error } = await supabase
@@ -91,4 +92,34 @@ export const getCurrentUser = async (user_id: any) => {
   } catch (error: any) {
   } finally {
   }
+};
+
+export const getTournaments = async () => {
+  let { data: tournaments, error } = await supabase
+    .from("tournaments")
+    .select("*");
+
+  return tournaments;
+};
+
+// @ts-ignore
+export const addTournament = async (name, id) => {
+  // Get the current date and time
+  const currentDateTime = new Date();
+
+  // Add two hours to the current datetime
+  const newDateTime = new Date(currentDateTime.getTime() + 2 * 60 * 60 * 1000);
+
+  // Format the new datetime object in ISO format
+  const newDateTimeIso = newDateTime.toISOString();
+  const { data, error } = await supabase.from("tournaments").insert([
+    {
+      name: name,
+      users: [id],
+      status: "",
+      endtime: newDateTimeIso,
+      submissions: [],
+      tasks: [],
+    },
+  ]);
 };
