@@ -28,13 +28,18 @@ import LeaderboardComponent from "@/components/LeaderboardComponent/LeaderboardC
 import Link from "next/link";
 import { GameText } from "../play.styles";
 import { getTournaments, addTournament } from "@/functionality/helpers";
+import { useRouter } from "next/router";
+import { Loader } from "@/components/Loader/Loader";
 
 export const tournamentTypes = ["all", "going", "ended", "current"];
 
 const Tournament = () => {
+  const router = useRouter();
   const [currentTournamentType, changeCurrentTournamentType] = useState(
     tournamentTypes[0]
   );
+
+  const [loading, setLoading] = useState(false);
 
   const [createModal, openCreateModal] = useState(false);
 
@@ -77,13 +82,12 @@ const Tournament = () => {
         return true;
       }
 
-      return (
-        currentTournamentType ===
-        tournament.status.slice(1, tournament.status.length - 1)
-      );
+      console.log(tournament.status);
+
+      return currentTournamentType === tournament.status;
     })
     .map((tournament: any, i: number) => {
-      const status = tournament.status
+      const status = tournament.status;
       return (
         <TournamentDiv key={i}>
           <TournamentsName>{tournament.name}</TournamentsName>
@@ -126,7 +130,12 @@ const Tournament = () => {
           name: "",
         }}
         onSubmit={async (values, actions) => {
-          await addTournament(values.name, user.id);
+          setLoading(true);
+          await addTournament(values.name, user.id).then((response) => {
+            console.log(response);
+            setLoading(false);
+            router.push(`/play/tournaments/${response}`);
+          });
         }}
       >
         <Form
@@ -174,6 +183,27 @@ const Tournament = () => {
       </IndividualTournament>
     </ShowTournaments>
   );
+  if (loading) {
+    return (
+      <TournamentsMain>
+        <SidebarTournaments>
+          {tournamentTypes.map((tournamentName: string, i: number) => (
+            <TournamentName
+              onClick={(e: any) => {
+                changeCurrentTournamentType(e.target.innerHTML);
+              }}
+              key={i}
+              // @ts-ignore
+              currentTournamentType={currentTournamentType === tournamentName}
+            >
+              {tournamentName}
+            </TournamentName>
+          ))}
+        </SidebarTournaments>
+        <Loader />
+      </TournamentsMain>
+    );
+  }
 
   return (
     <TournamentsMain>

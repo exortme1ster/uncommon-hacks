@@ -15,9 +15,10 @@ import {
 
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { users } from "@/functionality/data";
+import { useSelector } from "react-redux";
 import { Check } from "@/assets/Check";
 import { Close } from "@/assets/Close";
-import { generateTask } from "@/functionality/helpers";
+import { generateTask, getSpecificTournament } from "@/functionality/helpers";
 import { Loader } from "../Loader/Loader";
 
 const allTestCases = [
@@ -29,11 +30,17 @@ const allTestCases = [
 
 interface GameComponentInterface {
   tournamentid: string;
+  tournament: any;
 }
 
-const GameComponent: FC<GameComponentInterface> = ({ tournamentid }) => {
+const GameComponent: FC<GameComponentInterface> = ({
+  tournamentid,
+  tournament,
+}) => {
   const editorRef = useRef(null);
   const monaco = useMonaco();
+
+  const { user } = useSelector((state: any) => state.userReducer);
 
   const [moveBackground, setMoveBackground] = useState(0);
 
@@ -43,11 +50,21 @@ const GameComponent: FC<GameComponentInterface> = ({ tournamentid }) => {
 
   useEffect(() => {
     setLoading(true);
-    generateTask().then((response: any) => {
-      currentTask(response);
-      console.log(response);
-      setLoading(false);
-    });
+
+    if (tournamentid === "") {
+      generateTask().then((response: any) => {
+        currentTask(response);
+        console.log(response);
+        setLoading(false);
+      });
+    } else {
+      getSpecificTournament(tournamentid).then((response: any) => {
+        console.log(response);
+
+        currentTask(response);
+        setLoading(false);
+      });
+    }
   }, []);
 
   function handleEditorDidMount(editor: any, monaco: any) {
@@ -68,14 +85,14 @@ const GameComponent: FC<GameComponentInterface> = ({ tournamentid }) => {
     }
   }, [monaco]);
 
-  const correct = allTestCases
-    .map((score: any, i: number) => {
-      if (score.score) {
-        return 1;
-      }
-      return 0;
-    })
-    .reduce((acc: any, current: any) => acc + current);
+  // const correct = allTestCases
+  //   .map((score: any, i: number) => {
+  //     if (score.score) {
+  //       return 1;
+  //     }
+  //     return 0;
+  //   })
+  //   .reduce((acc: any, current: any) => acc + current);
 
   return (
     <GameMain
@@ -84,12 +101,18 @@ const GameComponent: FC<GameComponentInterface> = ({ tournamentid }) => {
       }}
     >
       <ShowGame>
-        <ShowGameTitle>Hello, lol</ShowGameTitle>
+        <ShowGameTitle>Hello, {user.email}</ShowGameTitle>
         <ShowGameDescription>
           ChatGPT {loading ? "is generating" : "generated"} a coding question
           for you ;)
         </ShowGameDescription>
-        {!loading ? <ShowGameCode>{task?.task}</ShowGameCode> : <></>}
+        {!loading ? (
+          <ShowGameCode>
+            {tournamentid === "" ? task?.task : task?.prompt}
+          </ShowGameCode>
+        ) : (
+          <></>
+        )}
       </ShowGame>
       <Mover>
         {/* <Handle>
@@ -136,9 +159,7 @@ const GameComponent: FC<GameComponentInterface> = ({ tournamentid }) => {
             }}
           >
             <TestCases>
-              <TestCaseTitle>
-                Test Cases {correct}/{task?.test_cases?.length}
-              </TestCaseTitle>
+              <TestCaseTitle>Test Cases {task?.tests?.length}</TestCaseTitle>
               {task?.test_cases?.map((testCase: any, i: number) => {
                 return (
                   <TestCase>

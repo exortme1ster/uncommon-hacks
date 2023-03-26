@@ -102,6 +102,20 @@ export const getTournaments = async () => {
   return tournaments;
 };
 
+export const getSpecificTournament = async (tourney_id: any) => {
+  let { data: tournaments, error } = await supabase
+    .from("tournaments")
+    .select("tasks")
+    .match({ id: tourney_id });
+
+  let { data: task, error: task_error } = await supabase
+    .from("tasks")
+    .select("*")
+    .match({ id: tournaments![0].tasks[0] });
+
+  return task![0];
+};
+
 // @ts-ignore
 export const addTournament = async (name, id) => {
   // Get the current date and time
@@ -127,12 +141,11 @@ export const addTournament = async (name, id) => {
     .select();
 
   // @ts-ignore
+  console.log("TOURNEY");
   console.log(data);
 
   // generate coding task for everybody
   const codingTask = await generateTournamentTasks();
-
-  console.log(codingTask[0]);
 
   // @ts-ignore
   const test_cases_strings = codingTask[0].test_cases.map((obj) => {
@@ -152,5 +165,13 @@ export const addTournament = async (name, id) => {
         function_signature: codingTask[0].function_signature,
         tests: test_cases_strings,
       },
-    ]);
+    ])
+    .select();
+
+  const { data: again, error: againE } = await supabase
+    .from("tournaments")
+    .update({ tasks: `{${coding_task![0].id}}` })
+    .eq("id", data![0].id);
+
+  return data![0].id;
 };

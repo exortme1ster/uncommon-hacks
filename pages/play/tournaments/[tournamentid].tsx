@@ -9,7 +9,12 @@ const TournamentID = () => {
 
   useEffect(() => {}, [router]);
 
-  return <GameComponent tournamentid={router.query.tournamentid as string} />;
+  return (
+    <GameComponent
+      tournament={""}
+      tournamentid={router.query.tournamentid as string}
+    />
+  );
 };
 
 export default TournamentID;

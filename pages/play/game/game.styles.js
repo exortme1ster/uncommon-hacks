@@ -15,8 +15,9 @@ export const ShowGame = styled.div`
 `;
 export const ShowGameTitle = styled.h2`
   color: var(--text-1);
-  font-size: 6.4rem;
+  font-size: 5.6rem;
   font-weight: 400;
+  margin-bottom: 2.4rem;
 `;
 export const ShowGameDescription = styled.p`
   color: var(--text-1);
