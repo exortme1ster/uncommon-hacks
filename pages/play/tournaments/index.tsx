@@ -30,44 +30,6 @@ import { GameText } from "../play.styles";
 import { getTournaments, addTournament } from "@/functionality/helpers";
 
 export const tournamentTypes = ["all", "going", "ended", "current"];
-// export const tournaments = [
-//   {
-//     name: "aosidjasdoij",
-//     status: "going",
-//     users: ["21231", "21231"],
-//     id: "12312",
-//   },
-//   {
-//     name: "aosidjasdoij",
-//     status: "going",
-//     users: ["21231", "21231", "21231"],
-//     id: "1231111",
-//   },
-//   {
-//     name: "aosidjasdoij",
-//     status: "going",
-//     users: ["21231", "21231", "21231"],
-//     id: "11239109",
-//   },
-//   {
-//     name: "aosidjasdoij",
-//     status: "ended",
-//     users: ["21231", "21231", "21231"],
-//     id: "123819",
-//   },
-//   {
-//     name: "aosidjasdoij",
-//     status: "ended",
-//     users: ["21231", "21231", "21231"],
-//     id: "1223",
-//   },
-//   {
-//     name: "aosidjasdoij",
-//     status: "ended",
-//     users: ["21231", "21231", "21231"],
-//     id: "1123910912390",
-//   },
-// ];
 
 const Tournament = () => {
   const [currentTournamentType, changeCurrentTournamentType] = useState(
@@ -79,8 +41,6 @@ const Tournament = () => {
   const [tournaments, setTournaments] = useState([]);
 
   const { user } = useSelector((state: any) => state.userReducer);
-
-  const [counter, setCounter] = useState(0);
 
   // @ts-ignore
   useEffect(() => {
@@ -95,7 +55,7 @@ const Tournament = () => {
           // @ts-ignore
           newArr.push(payload.new);
           setTournaments(newArr);
-          window.location.reload();
+          // window.location.reload();
         }
       )
       .subscribe();
@@ -123,7 +83,7 @@ const Tournament = () => {
       );
     })
     .map((tournament: any, i: number) => {
-      const status = tournament.status.slice(1, tournament.status.length - 1);
+      const status = tournament.status
       return (
         <TournamentDiv key={i}>
           <TournamentsName>{tournament.name}</TournamentsName>

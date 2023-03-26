@@ -61,7 +61,7 @@ export const generateTask = async () => {
 export const generateTournamentTasks = async () => {
   let tournamentTasks = [];
 
-  while (tournamentTasks.length !== 2) {
+  while (tournamentTasks.length !== 1) {
     const task = await generateTask();
 
     if (task !== false) {
@@ -112,14 +112,45 @@ export const addTournament = async (name, id) => {
 
   // Format the new datetime object in ISO format
   const newDateTimeIso = newDateTime.toISOString();
-  const { data, error } = await supabase.from("tournaments").insert([
-    {
-      name: name,
-      users: [id],
-      status: "",
-      endtime: newDateTimeIso,
-      submissions: [],
-      tasks: [],
-    },
-  ]);
+  const { data, error } = await supabase
+    .from("tournaments")
+    .insert([
+      {
+        name: name,
+        users: [id],
+        status: "going",
+        endtime: newDateTimeIso,
+        submissions: [],
+        tasks: [],
+      },
+    ])
+    .select();
+
+  // @ts-ignore
+  console.log(data);
+
+  // generate coding task for everybody
+  const codingTask = await generateTournamentTasks();
+
+  console.log(codingTask[0]);
+
+  // @ts-ignore
+  const test_cases_strings = codingTask[0].test_cases.map((obj) => {
+    const entries = Object.entries(obj);
+    const properties = entries.map(([key, value]) => `${key}: "${value}"`);
+    return `{ ${properties.join(", ")} }`;
+  });
+
+  const { data: coding_task, error: coding_error } = await supabase
+    .from("tasks")
+    .insert([
+      {
+        // @ts-ignore
+        tournament_id: data[0].id,
+        prompt: codingTask[0].task,
+        correct_output: codingTask[0].code_solution,
+        function_signature: codingTask[0].function_signature,
+        tests: test_cases_strings,
+      },
+    ]);
 };
