@@ -52,22 +52,27 @@ export const Navigation = styled.ul`
   opacity: ${(props) => (props.navigationState ? "1" : "0")};
   pointer-events: ${(props) => (props.navigationState ? "auto" : "none")};
   user-select: ${(props) => (props.navigationState ? "auto" : "none")};
- 
-  span {
-    font-size: 2.4rem;
-    height: 120%;
-    transition: all .2s;
-  }
 
-  span:hover {
-    box-shadow: inset 0 -2px  var(--brand8);
-    color:  var(--brand8);
-  }
+
   
 
 `;
 
-export const LinkItem = styled.li``;
+export const LinkItem = styled.li`
+  span {
+    font-size: 2.4rem;
+    height: 120%;
+    transition: all 0.2s;
+    box-shadow: ${(props) =>
+      props.isOn ? "inset 0 -2px  var(--brand8)" : "none"};
+    color: ${(props) => (props.isOn ? "var(--brand8)" : "var(--brand2)")};
+  }
+
+  span:hover {
+    box-shadow: inset 0 -2px var(--brand8);
+    color: var(--brand8);
+  }
+`;
 
 export const LinkText = styled.span`
   display: inline-block;

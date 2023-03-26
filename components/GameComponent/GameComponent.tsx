@@ -41,12 +41,11 @@ const GameComponent: FC<GameComponentInterface> = ({ tournamentid }) => {
 
   const [task, currentTask] = useState<any>();
 
-  console.log(task);
-  console.log(tournamentid);
   useEffect(() => {
     setLoading(true);
     generateTask().then((response: any) => {
       currentTask(response);
+      console.log(response);
       setLoading(false);
     });
   }, []);

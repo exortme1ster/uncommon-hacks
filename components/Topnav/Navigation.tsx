@@ -49,7 +49,13 @@ const NavigationComponent: FC<NavigationComponentI> = ({
           {loggedPages.map((link: string, i: number) => {
             return (
               <>
-                <LinkItem key={i}>
+                <LinkItem
+                  isOn={
+                    link.toLocaleLowerCase() ===
+                    router.pathname.slice(1, router.pathname.length)
+                  }
+                  key={i}
+                >
                   <Link
                     href={"/" + link.toLocaleLowerCase()}
                     onClick={() => {

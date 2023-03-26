@@ -76,41 +76,51 @@ const Tournament = () => {
 
   const [createModal, openCreateModal] = useState(false);
 
-  const [tournaments, setTournaments] = useState([])
+  const [tournaments, setTournaments] = useState([]);
 
   const { user } = useSelector((state: any) => state.userReducer);
 
-  const [counter, setCounter] = useState(0)
+  const [counter, setCounter] = useState(0);
 
   // @ts-ignore
   useEffect(() => {
-    const data = supabase.channel('custom-all-channel')
-    .on(
-      'postgres_changes',
-      { event: 'INSERT', schema: 'public', table: 'tournaments' },
-      (payload) => {
-        console.log(payload)
-        let newArr = tournaments;
+    const data = supabase
+      .channel("custom-all-channel")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "tournaments" },
+        (payload) => {
+          console.log(payload);
+          let newArr = tournaments;
           // @ts-ignore
-        newArr.push(payload.new);
-        setTournaments(newArr)
-        window.location.reload();
-      }
-    )
-    .subscribe()
-  }, [tournaments])
+          newArr.push(payload.new);
+          setTournaments(newArr);
+          window.location.reload();
+        }
+      )
+      .subscribe();
+  }, [tournaments]);
 
   // @ts-ignore
   useEffect(async () => {
-    let data = await getTournaments()
-     // @ts-ignore
-    setTournaments(data)
-  }, [])
-
-  console.log(tournaments)
+    let data = await getTournaments();
+    // @ts-ignore
+    setTournaments(data);
+  }, []);
 
   const tournamentsVar = tournaments
+    .filter((tournament: any) => {
+      if (currentTournamentType === "all") {
+        return true;
+      }
+
+      return (
+        currentTournamentType ===
+        tournament.status.slice(1, tournament.status.length - 1)
+      );
+    })
     .map((tournament: any, i: number) => {
+      const status = tournament.status.slice(1, tournament.status.length - 1);
       return (
         <TournamentDiv key={i}>
           <TournamentsName>{tournament.name}</TournamentsName>
@@ -121,10 +131,10 @@ const Tournament = () => {
           </TournamentPlayers>
 
           {/* @ts-ignore */}
-          <TournamentStatus current={tournament.status === "going"}>
-            {tournament.status}
+          <TournamentStatus current={status === "going"}>
+            {status}
           </TournamentStatus>
-          {tournament.status === "going" ? (
+          {status === "going" ? (
             <TournamentJoin>
               Join&nbsp;&nbsp;<span>&rarr;</span>
             </TournamentJoin>
@@ -153,7 +163,7 @@ const Tournament = () => {
           name: "",
         }}
         onSubmit={async (values, actions) => {
-          await addTournament(values.name, user.id)
+          await addTournament(values.name, user.id);
         }}
       >
         <Form
@@ -181,7 +191,7 @@ const Tournament = () => {
   const current = (
     <ShowTournaments>
       <IndividualTournament>
-        <MyTournament>Welcome to {tournaments[0]?.name}</MyTournament>
+        <MyTournament>Welcome to {tournaments.name}</MyTournament>
         <TournamentsDescription>
           Welcome to the ultimate showdown of keystrokes and syntax! In this
           tournament, you'll face off against the greatest minds in coding,
@@ -220,7 +230,13 @@ const Tournament = () => {
       </SidebarTournaments>
       <ShowTournaments>
         {currentTournamentType === "current" ? current : <></>}
-        {createModal ? createTournament : tournamentsVar}
+        {createModal ? (
+          createTournament
+        ) : currentTournamentType === "current" ? (
+          <></>
+        ) : (
+          tournamentsVar
+        )}
         {currentTournamentType === "current" ? (
           <></>
         ) : (
