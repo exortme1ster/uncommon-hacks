@@ -2,7 +2,7 @@ export const title = "Hack Duel";
 export const year = new Date().getFullYear();
 
 export const page = ["Login", "Play", "Account", "Leaderboard"];
-export const loggedPages = ["Leaderboard", "Play", "Account", "Logout"];
+export const loggedPages = ["Leaderboard", "Play", "Account"];
 
 export interface User {
   user_id: string;
