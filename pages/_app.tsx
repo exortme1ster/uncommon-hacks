@@ -7,10 +7,6 @@ import Nav from "@/components/Topnav/Nav";
 import PopupToast from "@/components/PopupToast/PopupToast";
 import Footer from "@/components/Footer/Footer";
 import Background from "@/components/Background/Background";
-import { use, useEffect, useState } from "react";
-import { supabase } from "@/functionality/supabase";
-import { useRouter } from 'next/router'
-import { insertUser } from "@/functionality/helpers";
 
 export default function App({ Component, pageProps }: AppProps) {
   const main = (
@@ -20,31 +16,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <PopupToast />
     </Background>
   );
-
-  const [session, setSession] = useState(null)
-  const router = useRouter()
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      // @ts-ignore
-      setSession(session)
-    })
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      // @ts-ignore
-      setSession(session)
-    })
-  }, [])
-
-    // navigate to logout if session is null
-    // useEffect(() => {
-    //   if (session) {
-    //     router.push('/platform')
-    //   } else {
-    //     insertUser();
-    //     router.push('/')
-    //   }
-    // }, [session])
 
   return (
     <Provider store={store}>
@@ -58,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
           rel="stylesheet"
         />
       </Head>
+      {/* @ts-ignore */}
       <Nav />
       {main}
       <Footer />

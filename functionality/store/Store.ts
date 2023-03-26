@@ -7,17 +7,16 @@ import {
 } from "@reduxjs/toolkit";
 import userReducer from "./UserAuth";
 import toastReducer from "./Toast";
-import thunk from "redux-thunk";
 
-// import logger from "redux-logger";
-
-const rootReducer = combineReducers({ userReducer });
+const rootReducer = combineReducers({
+  userReducer,
+  toastReducer,
+});
 
 export const store = configureStore({
   // @ts-ignore
   reducer: {
     rootReducer,
-    toastReducer,
   },
   middleware: (getDefaultMiddleware: any) =>
     getDefaultMiddleware({
@@ -33,7 +32,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 
-// const
-
-// store = createStore(userAuth, applyMiddleware(thunk));
 export type AppDispatch = typeof store.dispatch;
