@@ -8,11 +8,6 @@ import {
 import userReducer from "./UserAuth";
 import toastReducer from "./Toast";
 
-// const rootReducer = combineReducers({
-//   userReducer,
-//   toastReducer,
-// });
-
 export const store = configureStore({
   // @ts-ignore
   reducer: {
