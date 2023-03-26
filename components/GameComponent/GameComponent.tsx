@@ -222,6 +222,7 @@ const GameComponent: FC<GameComponentInterface> = ({
       ) : (
         <div>
           <Loader />
+          <L
         </div>
       )}
     </GameMain>
