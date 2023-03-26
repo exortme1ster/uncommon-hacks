@@ -102,10 +102,13 @@ const Tournament = () => {
   }, [tournaments]);
 
   // @ts-ignore
-  useEffect(async () => {
-    let data = await getTournaments();
-    // @ts-ignore
-    setTournaments(data);
+  useEffect(() => {
+    const getTourneys = async () => {
+      let data = await getTournaments();
+      // @ts-ignore
+      setTournaments(data);
+    };
+    getTourneys();
   }, []);
 
   const tournamentsVar = tournaments
