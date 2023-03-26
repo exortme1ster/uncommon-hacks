@@ -36,7 +36,7 @@ export default function Home() {
         </HomeTitleDiv>
         <LoginDiv>
           <Link href="/login">
-            <LinkText>Login</LinkText>
+            <LinkText>Play</LinkText>
           </Link>
         </LoginDiv>
       </HomePage>

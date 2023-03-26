@@ -5,7 +5,7 @@ export const BackgroundSection = styled.div`
   height: min-height: 100vh;
 
   background-image: repeating-linear-gradient(45deg, var(--gray1) 0, var(--gray2) 10px, transparent 0, transparent 50%);
-background-size: 32px 32px;
+background-size: 150px 150px;
 background-color: var(--gray2);
 z-index: -2;
 

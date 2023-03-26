@@ -8,6 +8,8 @@ import {
   GameTitle,
 } from "./play.styles";
 
+
+
 const modes = [
   {
     title: "Single Player",
