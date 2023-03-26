@@ -22,6 +22,7 @@ import {
   compileCode,
   generateTask,
   getSpecificTournament,
+  makeSubmission,
 } from "@/functionality/helpers";
 import { Loader } from "../Loader/Loader";
 
@@ -115,6 +116,8 @@ const GameComponent: FC<GameComponentInterface> = ({
             };
           });
         });
+
+        await makeSubmission(user.id, results, editorRef.current.getValue(), tournamentid)
       }
       setTestLoading(false);
     }

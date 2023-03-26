@@ -212,3 +212,40 @@ export const compileCode = async (code, tests) => {
   }
   return answers;
 };
+
+// @ts-ignore
+export const makeSubmission = async (userid, answers_arr, code, t_id) => {
+  let score = 0;
+
+  for (let i = 0; i < answers_arr.length; i++) {
+    if (answers_arr[i] === "yes") {
+      score += 25;
+    }
+  }
+
+  const { data, error } = await supabase
+    .from("submissions")
+    .insert([
+      { user_id: userid, score: score, code: code, tournament_id: t_id },
+    ])
+    .select();
+
+  let { data: new_sub, error: e1 } = await supabase
+    .from("tournaments")
+    .select("submissions")
+    .match({ id: t_id });
+
+  console.log(new_sub);
+  // @ts-ignore
+  new_sub.push(data[0].id);
+
+  console.log(new_sub);
+
+  // const { data: d, error: e } = await supabase
+  //   .from("tournaments")
+  //   // @ts-ignore
+  //   .update({ submissions: new_sub })
+  //   .eq("id", t_id);
+
+  return score;
+};
