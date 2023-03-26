@@ -31,6 +31,8 @@ import {
   getTournaments,
   addTournament,
   getSpecificTournament,
+  JoinTournament,
+  joinTournament,
 } from "@/functionality/helpers";
 import { useRouter } from "next/router";
 import { Loader } from "@/components/Loader/Loader";
@@ -105,7 +107,11 @@ const Tournament = () => {
             {status}
           </TournamentStatus>
           {status === "going" ? (
-            <TournamentJoin>
+            <TournamentJoin
+              onClick={() => {
+                joinTournament(tournament.id, user.id);
+              }}
+            >
               Join&nbsp;&nbsp;<span>&rarr;</span>
             </TournamentJoin>
           ) : (

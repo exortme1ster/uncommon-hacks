@@ -84,15 +84,14 @@ export const getAllUsers = async () => {
 };
 
 export const getCurrentUser = async (user_id: any) => {
-  try {
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .match({ user_id: user_id });
-    return data![0];
-  } catch (error: any) {
-  } finally {
-  }
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .match({ user_id: user_id });
+
+  console.log(data);
+
+  return data![0];
 };
 
 export const getTournaments = async () => {
@@ -119,6 +118,24 @@ export const getSpecificTournament = async (user_id: any) => {
     .match({ id: tourney_id![0].current_tournament });
 
   return tournaments;
+};
+export const joinTournament = async (tourney_id: any, user_id: any) => {
+  let { data: users, error } = await supabase
+    .from("tournaments")
+    .select("users")
+    .match({ id: tourney_id });
+
+  const newUsers = users![0].users;
+  newUsers.push(user_id);
+
+  console.log(newUsers);
+
+  let { data: updated, error: updatedError } = await supabase
+    .from("tournaments")
+    .update({ users: newUsers })
+    .match({ id: tourney_id });
+
+  return users;
 };
 
 export const getSpecificTournamentTask = async (tourney_id: any) => {

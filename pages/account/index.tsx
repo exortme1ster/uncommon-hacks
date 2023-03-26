@@ -23,15 +23,19 @@ const Account = () => {
   const dispatch = useDispatch();
   const [session, setSession] = useState(null);
 
+  // console.log(user);
+
   useEffect(() => {
     if (user !== undefined) {
+      console.log(user);
       setLoading(true);
       getCurrentUser(user.id).then((response: any) => {
+        console.log(response);
         setUserTable(response as User);
         setLoading(false);
       });
     } else {
-      console.log("user is undefined!")
+      console.log("user is undefined!");
     }
   }, [session]);
 

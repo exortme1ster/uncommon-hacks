@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "@/functionality/supabase";
 import { useDispatch } from "react-redux";
 import { authUserLogin } from "@/functionality/store/UserAuth";
+import { insertUser } from "@/functionality/helpers";
 
 // @ts-ignore
 const Background = (props) => {
@@ -17,6 +18,7 @@ const Background = (props) => {
       if (session !== null) {
         // @ts-ignore
         setSession(session);
+        insertUser();
         dispatch(authUserLogin(session.user));
       }
     });

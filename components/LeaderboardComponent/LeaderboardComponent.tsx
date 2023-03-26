@@ -48,14 +48,14 @@ const LeaderboardComponent: FC<LeaderboardComponentInterface> = ({
   }, []);
 
   useEffect(() => {
-    console.log("hey");
     changeAllUsers((prevUsers: User[]) => {
       const newUsers = prevUsers.filter((user: User, i: number) => {
         // console.log(newUsers);
-        return users.includes(user.user_id);
+
+        return users !== undefined ? users.includes(user.user_id) : true;
       });
 
-      return newUsers;
+      return prevUsers;
     });
   }, [allUsers]);
 
