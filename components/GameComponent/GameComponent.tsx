@@ -33,6 +33,8 @@ interface GameComponentInterface {
   tournament: any;
 }
 
+const dummyOutput: number[] = [12, 20, 0];
+
 const GameComponent: FC<GameComponentInterface> = ({
   tournamentid,
   tournament,
@@ -48,20 +50,21 @@ const GameComponent: FC<GameComponentInterface> = ({
 
   const [task, currentTask] = useState<any>();
 
+  const [results, changeResults] = useState<any>();
   useEffect(() => {
     setLoading(true);
 
     if (tournamentid === "") {
       generateTask().then((response: any) => {
         currentTask(response);
-        console.log(response);
+        changeResults(response.test_cases);
         setLoading(false);
       });
     } else {
+      console.log("LOL");
       getSpecificTournament(tournamentid).then((response: any) => {
-        console.log(response);
-
         currentTask(response);
+        changeResults(response.tests);
         setLoading(false);
       });
     }
@@ -73,7 +76,18 @@ const GameComponent: FC<GameComponentInterface> = ({
 
   function showValue() {
     // @ts-ignore
-    if (editorRef.current !== null) alert(editorRef.current.getValue());
+    // if (editorRef.current !== null) alert(editorRef.current.getValue());
+    changeResults((prevState: any) => {
+      console.log(prevState);
+
+      return prevState.map((prev: any, i: number) => {
+        return {
+          expected_output: prev.expected_output,
+          input: prev.input,
+          score: prev.expected_output === dummyOutput[0],
+        };
+      });
+    });
   }
 
   useEffect(() => {
@@ -85,14 +99,18 @@ const GameComponent: FC<GameComponentInterface> = ({
     }
   }, [monaco]);
 
-  // const correct = allTestCases
-  //   .map((score: any, i: number) => {
-  //     if (score.score) {
-  //       return 1;
-  //     }
-  //     return 0;
-  //   })
-  //   .reduce((acc: any, current: any) => acc + current);
+  const correct = results
+    ?.map((score: any, i: number) => {
+      if (score.score) {
+        return 1;
+      }
+
+      if (score.score === undefined) {
+        return -1;
+      }
+      return 0;
+    })
+    .reduce((acc: any, current: any) => acc + current);
 
   return (
     <GameMain
@@ -159,11 +177,26 @@ const GameComponent: FC<GameComponentInterface> = ({
             }}
           >
             <TestCases>
-              <TestCaseTitle>Test Cases {task?.tests?.length}</TestCaseTitle>
-              {task?.test_cases?.map((testCase: any, i: number) => {
+              <TestCaseTitle>
+                Test Cases{" "}
+                <span>
+                  {correct < 0 ? "" : `${correct}/`}
+                  {results?.length}
+                </span>
+              </TestCaseTitle>
+              {results?.map((testCase: any, i: number) => {
+                console.log(testCase);
+
                 return (
-                  <TestCase>
-                    Test Case {i + 1} {testCase.score ? <Check /> : <Close />}
+                  <TestCase key={i}>
+                    Test Case{" "}
+                    {testCase.score === undefined ? (
+                      <span>O</span>
+                    ) : testCase.score ? (
+                      <Check />
+                    ) : (
+                      <Close />
+                    )}
                   </TestCase>
                 );
               })}

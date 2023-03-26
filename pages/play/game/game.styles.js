@@ -90,6 +90,10 @@ export const TestCaseTitle = styled.h4`
   font-weight: 400;
   padding: 1.2rem 1.2rem;
   border-bottom: 2px solid var(--border);
+
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
 `;
 
 export const TestCase = styled.p`
