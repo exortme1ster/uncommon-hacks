@@ -18,7 +18,7 @@ import { users } from "@/functionality/data";
 import { useSelector } from "react-redux";
 import { Check } from "@/assets/Check";
 import { Close } from "@/assets/Close";
-import { generateTask, getSpecificTournament } from "@/functionality/helpers";
+import { compileCode, generateTask, getSpecificTournament } from "@/functionality/helpers";
 import { Loader } from "../Loader/Loader";
 
 const allTestCases = [
@@ -74,20 +74,23 @@ const GameComponent: FC<GameComponentInterface> = ({
     editorRef.current = editor;
   }
 
-  function showValue() {
-    // @ts-ignore
-    // if (editorRef.current !== null) alert(editorRef.current.getValue());
-    changeResults((prevState: any) => {
-      console.log(prevState);
+  async function showValue() {
+    if (editorRef.current !== null){
+      console.log(task)
+      // @ts-ignore
+      const results = await compileCode(editorRef.current.getValue(), task.test_cases)
+      // @ts-ignore
+      changeResults((prevState: any) => {
 
-      return prevState.map((prev: any, i: number) => {
-        return {
-          expected_output: prev.expected_output,
-          input: prev.input,
-          score: prev.expected_output === dummyOutput[0],
-        };
-      });
-    });
+        return prevState.map((prev: any, i: number) => {
+          return {
+            expected_output: prev.expected_output,
+            input: prev.input,
+            score: results[i] === "yes"
+          };
+        });
+      });   
+    }
   }
 
   useEffect(() => {
@@ -185,8 +188,6 @@ const GameComponent: FC<GameComponentInterface> = ({
                 </span>
               </TestCaseTitle>
               {results?.map((testCase: any, i: number) => {
-                console.log(testCase);
-
                 return (
                   <TestCase key={i}>
                     Test Case{" "}

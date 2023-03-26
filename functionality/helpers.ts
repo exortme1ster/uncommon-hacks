@@ -38,7 +38,7 @@ export const generateTask = async () => {
       {
         role: "user",
         content:
-          "Generate me a coding task in JavaScript and give the right output so I can compare it later. Give me response back in JSON format with following structure: task, function_signature, code_solution, test_cases. Please give me exact format since I will apply JSON.parse() on it to get all the fields later.",
+          "Generate me a coding task in JavaScript and give the right output so I can compare it later. Give me response back in JSON format with following structure: task, function_signature (in format of function() {}), code_solution, test_cases. Please give me exact format since I will apply JSON.parse() on it to get all the fields later. Make sure there are 4(four) tests that are constructed in the form input: function_call(parameters), output: data. Make sure you follow the structure of tests since I will insert them directly into compiler to compare outputs. Makue sure that form of tests are always the same and there are 4 tests in total.",
       },
     ],
   });
@@ -174,4 +174,33 @@ export const addTournament = async (name, id) => {
     .eq("id", data![0].id);
 
   return data![0].id;
+};
+
+// @ts-ignore
+export const compileCode = async (code, tests) => {
+  let answers = [];
+  for (let i = 0; i < tests.length; i++) {
+    let test = tests[i];
+
+    const prompt = `Does the following code (written in JavaScript):\n\n${code}\n\npass the following test case?\ninput: ${test.input}\noutput: ${test.output}\n\nAnswer: YES or NO`;
+
+    const task = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+    });
+
+    const answer = task.data.choices[0].message?.content;
+    // @ts-ignore
+    let reponse = answer.split(" ")[0];
+    console.log(reponse);
+    let final_answer = reponse.replace(/[^a-zA-Z]/g, "").toLowerCase();
+    console.log(final_answer);
+    answers.push(final_answer);
+  }
+  return answers;
 };
