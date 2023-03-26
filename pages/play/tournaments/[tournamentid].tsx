@@ -1,7 +1,15 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import GameComponent from "@/components/GameComponent/GameComponent";
 
 const TournamentID = () => {
-  return <></>;
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  useEffect(() => {}, [router]);
+
+  return <GameComponent tournamentid={router.query.tournamentid as string} />;
 };
 
 export default TournamentID;

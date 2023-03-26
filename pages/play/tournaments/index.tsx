@@ -20,39 +20,53 @@ import {
   CreateTournamentTitle,
   LabelFieldContainer,
   FormButton,
+  IndividualTournament,
+  TournamentsDescription,
+  MyTournament,
+  PlayButtonDiv,
+  Play,
 } from "./tournaments.styles";
+import LeaderboardComponent from "@/components/LeaderboardComponent/LeaderboardComponent";
+import Link from "next/link";
+import { GameText } from "../play.styles";
 
-const tournamentTypes = ["all", "going", "ended", "current"];
-const tournaments = [
+export const tournamentTypes = ["all", "going", "ended", "current"];
+export const tournaments = [
   {
     name: "aosidjasdoij",
     status: "going",
     users: ["21231", "21231"],
+    id: "12312",
   },
   {
     name: "aosidjasdoij",
     status: "going",
     users: ["21231", "21231", "21231"],
+    id: "1231111",
   },
   {
     name: "aosidjasdoij",
     status: "going",
     users: ["21231", "21231", "21231"],
+    id: "11239109",
   },
   {
     name: "aosidjasdoij",
     status: "ended",
     users: ["21231", "21231", "21231"],
+    id: "123819",
   },
   {
     name: "aosidjasdoij",
     status: "ended",
     users: ["21231", "21231", "21231"],
+    id: "1223",
   },
   {
     name: "aosidjasdoij",
     status: "ended",
     users: ["21231", "21231", "21231"],
+    id: "1123910912390",
   },
 ];
 const Tournament = () => {
@@ -98,7 +112,7 @@ const Tournament = () => {
     });
 
   const inputStyle = {
-    color: "#F00",
+    color: "#6a6a6a",
     padding: "8px 4px",
     background: "#232323",
     width: `98%`,
@@ -113,13 +127,9 @@ const Tournament = () => {
       <Formik
         initialValues={{
           name: "",
-          email: "",
-          password: "",
         }}
         onSubmit={(values, actions) => {
           console.log(values.name);
-          console.log(values.password);
-          console.log(values.email);
         }}
       >
         <Form
@@ -137,19 +147,35 @@ const Tournament = () => {
             <label htmlFor="name">name</label>
             <Field style={inputStyle} id="name" name="name" />
           </LabelFieldContainer>
-          <LabelFieldContainer>
-            <label htmlFor="password">password</label>
-            <Field style={inputStyle} id="password" name="password" />
-          </LabelFieldContainer>
-          <LabelFieldContainer>
-            <label htmlFor="email">email</label>
-            <Field style={inputStyle} id="email" name="email" />
-          </LabelFieldContainer>
 
           <FormButton type="submit">Submit</FormButton>
         </Form>
       </Formik>
     </CreateTournament>
+  );
+
+  const current = (
+    <ShowTournaments>
+      <IndividualTournament>
+        <MyTournament>Welcome to {tournaments[0].name}</MyTournament>
+        <TournamentsDescription>
+          Welcome to the ultimate showdown of keystrokes and syntax! In this
+          tournament, you'll face off against the greatest minds in coding,
+          armed with nothing but your trusty keyboard and caffeine-fueled
+          determination.
+        </TournamentsDescription>
+        <TournamentsDescription>
+          Will you rise to the challenge and emerge victorious, or will you be
+          left in the dust of your rivals' finely tuned code?
+        </TournamentsDescription>
+        <PlayButtonDiv>
+          <Link href={`/play/tournaments/${tournaments[0].id}`}>
+            <GameText>Play</GameText>
+          </Link>
+        </PlayButtonDiv>
+        <LeaderboardComponent isGlobal={false} />
+      </IndividualTournament>
+    </ShowTournaments>
   );
 
   return (
@@ -169,16 +195,21 @@ const Tournament = () => {
         ))}
       </SidebarTournaments>
       <ShowTournaments>
+        {currentTournamentType === "current" ? current : <></>}
         {createModal ? createTournament : tournamentsVar}
-        <AddTournament
-          onClick={() => {
-            console.log(createModal);
-            openCreateModal((prevState: boolean) => !prevState);
-          }}
-          isOn={createModal}
-        >
-          +
-        </AddTournament>
+        {currentTournamentType === "current" ? (
+          <></>
+        ) : (
+          <AddTournament
+            onClick={() => {
+              console.log(createModal);
+              openCreateModal((prevState: boolean) => !prevState);
+            }}
+            isOn={createModal}
+          >
+            +
+          </AddTournament>
+        )}
       </ShowTournaments>
     </TournamentsMain>
   );

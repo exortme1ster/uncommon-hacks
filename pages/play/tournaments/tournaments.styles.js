@@ -135,7 +135,8 @@ export const AddTournament = styled.button`
 export const CreateTournament = styled.div`
   background-color: var(--gray4);
 
-  width: 100%;
+  width: auto;
+  // width: 200px;
 
   border-radius: var(--border-radius-large);
 `;
@@ -152,8 +153,50 @@ export const LabelFieldContainer = styled.div`
   display: flex;
   font-size: 2.4rem;
   gap: 2.4rem;
-  color: var(--text-2);
+  color: var(--text-1);
+  margin-bottom: 2.4rem;
 `;
 export const FormButton = styled.button`
-  width: 50%;
+  width: auto;
+  padding: 1.2rem 2.4rem;
+  font-size: 1.6rem;
+  background-color: var(--brand8);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover {
+    background-color: var(--brand10);
+  }
+  color: var(--brand2);
+`;
+
+export const IndividualTournament = styled.div`
+  min-height: 100vh;
+  padding: 2.4rem;
+  text-align: center;
+`;
+
+export const TournamentsDescription = styled.p`
+  margin-top: 2.4rem;
+  font-size: 3rem;
+  color: var(--text-1);
+  line-height: 1.5;
+`;
+
+// When you have a tournament, add "current tab"
+// Only the current tab will redirect you to your tournament
+
+export const MyTournament = styled.h2`
+  font-size: 6.2rem;
+  font-weight: 400;
+  color: var(--text-0);
+  padding: 0;
+`;
+
+export const PlayButtonDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3.2rem 0;
 `;
