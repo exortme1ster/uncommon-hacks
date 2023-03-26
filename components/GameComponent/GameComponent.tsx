@@ -18,7 +18,11 @@ import { users } from "@/functionality/data";
 import { useSelector } from "react-redux";
 import { Check } from "@/assets/Check";
 import { Close } from "@/assets/Close";
-import { compileCode, generateTask, getSpecificTournament } from "@/functionality/helpers";
+import {
+  compileCode,
+  generateTask,
+  getSpecificTournament,
+} from "@/functionality/helpers";
 import { Loader } from "../Loader/Loader";
 
 const allTestCases = [
@@ -47,6 +51,7 @@ const GameComponent: FC<GameComponentInterface> = ({
   const [moveBackground, setMoveBackground] = useState(0);
 
   const [loading, setLoading] = useState(false);
+  const [testLoading, setTestLoading] = useState(false);
 
   const [task, currentTask] = useState<any>();
 
@@ -63,7 +68,7 @@ const GameComponent: FC<GameComponentInterface> = ({
     } else {
       getSpecificTournament(tournamentid).then((response: any) => {
         currentTask(response);
-        changeResults(response.test_cases);
+        changeResults(response.tests);
         setLoading(false);
       });
     }
@@ -74,21 +79,44 @@ const GameComponent: FC<GameComponentInterface> = ({
   }
 
   async function showValue() {
-    if (editorRef.current !== null){
-      console.log(task)
+    if (editorRef.current !== null) {
+      console.log(task);
       // @ts-ignore
-      const results = await compileCode(editorRef.current.getValue(), task.test_cases)
-      // @ts-ignore
-      changeResults((prevState: any) => {
-
-        return prevState.map((prev: any, i: number) => {
-          return {
-            expected_output: prev.expected_output,
-            input: prev.input,
-            score: results[i] === "yes"
-          };
+      setTestLoading(true);
+      if (tournamentid === "") {
+        // @ts-ignore
+        const results = await compileCode(
+          editorRef.current.getValue(),
+          task.test_cases
+        );
+        // @ts-ignore
+        changeResults((prevState: any) => {
+          return prevState.map((prev: any, i: number) => {
+            return {
+              expected_output: prev.expected_output,
+              input: prev.input,
+              score: results[i] === "yes",
+            };
+          });
         });
-      });   
+      } else {
+        // @ts-ignore
+        const results = await compileCode(
+          editorRef.current.getValue(),
+          task.tests
+        );
+        // @ts-ignore
+        changeResults((prevState: any) => {
+          return prevState.map((prev: any, i: number) => {
+            return {
+              expected_output: prev.expected_output,
+              input: prev.input,
+              score: results[i] === "yes",
+            };
+          });
+        });
+      }
+      setTestLoading(false);
     }
   }
 
@@ -135,26 +163,6 @@ const GameComponent: FC<GameComponentInterface> = ({
         )}
       </ShowGame>
       <Mover>
-        {/* <Handle>
-          <span
-            onClick={() => {
-              if (moveBackground <= -0.7) return;
-              setMoveBackground((prevState: number) => prevState - 0.1);
-            }}
-          >
-            (
-          </span>
-          &nbsp;&nbsp;
-          <span
-            onClick={() => {
-              // if (moveBackground > .3) return;
-              if (moveBackground >= 1.5) return;
-              setMoveBackground((prevState: number) => prevState + 0.1);
-            }}
-          >
-            )
-          </span>
-        </Handle> */}
       </Mover>
       {!loading ? (
         <div>
@@ -178,34 +186,40 @@ const GameComponent: FC<GameComponentInterface> = ({
               gap: "4.8rem",
             }}
           >
-            <TestCases>
-              <TestCaseTitle>
-                Test Cases{" "}
-                <span>
-                  {correct < 0 ? "" : `${correct}/`}
-                  {results?.length}
-                </span>
-              </TestCaseTitle>
-              {results?.map((testCase: any, i: number) => {
-                return (
-                  <TestCase key={i}>
-                    Test Case{" "}
-                    {testCase.score === undefined ? (
-                      <span>O</span>
-                    ) : testCase.score ? (
-                      <Check />
-                    ) : (
-                      <Close />
-                    )}
-                  </TestCase>
-                );
-              })}
-            </TestCases>
+            {!testLoading ? (
+              <TestCases>
+                <TestCaseTitle>
+                  Test Cases{" "}
+                  <span>
+                    {correct < 0 ? "" : `${correct}/`}
+                    {results?.length}
+                  </span>
+                </TestCaseTitle>
+                {results?.map((testCase: any, i: number) => {
+                  return (
+                    <TestCase key={i}>
+                      Test Case{" "}
+                      {testCase.score === undefined ? (
+                        <span>O</span>
+                      ) : testCase.score ? (
+                        <Check />
+                      ) : (
+                        <Close />
+                      )}
+                    </TestCase>
+                  );
+                })}
+              </TestCases>
+            ) : (
+              <Loader />
+            )}
             <SubmitCode onClick={showValue}>Submit</SubmitCode>
           </div>
         </div>
       ) : (
-        <Loader />
+        <div>
+          <Loader />
+        </div>
       )}
     </GameMain>
   );

@@ -115,6 +115,16 @@ export const getSpecificTournament = async (tourney_id: any) => {
     .select("*")
     .match({ id: tournaments![0].tasks[0] });
 
+  console.log(task);
+
+  // @ts-ignore
+  task![0].tests = task![0].tests.map((obj) => {
+    const cleanedStr = obj.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2": ');
+    return JSON.parse(cleanedStr);
+  });
+
+  console.log(task);
+
   return task![0];
 };
 
@@ -141,10 +151,6 @@ export const addTournament = async (name, id) => {
       },
     ])
     .select();
-
-  // @ts-ignore
-  console.log("TOURNEY");
-  console.log(data);
 
   // generate coding task for everybody
   const codingTask = await generateTournamentTasks();
