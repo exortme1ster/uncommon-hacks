@@ -116,7 +116,7 @@ export const getSpecificTournament = async (user_id: any) => {
   let { data: tournaments, error } = await supabase
     .from("tournaments")
     .select("*")
-    .match({ id: tourney_id![0].current_tournament });
+    .match({ id: tourney_id![0]?.current_tournament });
 
   return tournaments;
 };

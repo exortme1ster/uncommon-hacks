@@ -36,10 +36,6 @@ const LeaderboardComponent: FC<LeaderboardComponentInterface> = ({
   const { isAuth } = useSelector((state: any) => state.userReducer);
 
   useEffect(() => {
-    if (allUsers.length !== 0) return;
-
-    console.log(allUsers);
-
     setLoading(true);
     getAllUsers().then((response) => {
       changeAllUsers(response as User[]);
@@ -47,23 +43,10 @@ const LeaderboardComponent: FC<LeaderboardComponentInterface> = ({
     });
   }, []);
 
-  useEffect(() => {
-    console.log("hey");
-    changeAllUsers((prevUsers: User[]) => {
-      const newUsers = prevUsers.filter((user: User, i: number) => {
-        // console.log(newUsers);
-        return users.includes(user.user_id);
-      });
-
-      return newUsers;
-    });
-  }, [allUsers]);
-
   return (
     <LeaderboardGrid>
       <Sorter
         onClick={() => {
-          console.log("CHANGE");
           changeSortByWins((prevState: boolean) => !prevState);
         }}
       >
