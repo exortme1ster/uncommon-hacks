@@ -27,7 +27,11 @@ import {
 import LeaderboardComponent from "@/components/LeaderboardComponent/LeaderboardComponent";
 import Link from "next/link";
 import { GameText } from "../play.styles";
-import { getTournaments, addTournament } from "@/functionality/helpers";
+import {
+  getTournaments,
+  addTournament,
+  getSpecificTournament,
+} from "@/functionality/helpers";
 import { useRouter } from "next/router";
 import { Loader } from "@/components/Loader/Loader";
 
@@ -159,10 +163,26 @@ const Tournament = () => {
     </CreateTournament>
   );
 
+  const [currentTournament, getCurrentTournament] = useState<any>();
+
+  useEffect(() => {
+    if (user === undefined || user === null) return;
+
+    getSpecificTournament(user.id).then((response) => {
+      if (response === undefined || response === null) {
+        return;
+      }
+
+      getCurrentTournament(response[0]);
+    });
+  }, [user]);
+
+  console.log(currentTournament);
+
   const current = (
     <ShowTournaments>
       <IndividualTournament>
-        <MyTournament>Welcome to {tournaments.name}</MyTournament>
+        <MyTournament>Welcome to {currentTournament?.name}</MyTournament>
         <TournamentsDescription>
           Welcome to the ultimate showdown of keystrokes and syntax! In this
           tournament, you'll face off against the greatest minds in coding,
@@ -174,11 +194,14 @@ const Tournament = () => {
           left in the dust of your rivals' finely tuned code?
         </TournamentsDescription>
         <PlayButtonDiv>
-          <Link href={`/play/tournaments/${tournaments[0]?.id}`}>
+          <Link href={`/play/tournaments/${currentTournament?.id}`}>
             <GameText>Play</GameText>
           </Link>
         </PlayButtonDiv>
-        <LeaderboardComponent isGlobal={false} />
+        <LeaderboardComponent
+          users={currentTournament?.users}
+          isGlobal={false}
+        />
       </IndividualTournament>
     </ShowTournaments>
   );

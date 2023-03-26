@@ -1,5 +1,7 @@
 import React, { FC, useRef, useEffect, useState } from "react";
 import {
+  AttemptsBox,
+  Attempt,
   GameMain,
   ShowGame,
   ShowGameDescription,
@@ -21,10 +23,12 @@ import { Close } from "@/assets/Close";
 import {
   compileCode,
   generateTask,
-  getSpecificTournament,
+  getSpecificTournamentTask,
   makeSubmission,
 } from "@/functionality/helpers";
 import { Loader } from "../Loader/Loader";
+import { useRouter } from "next/router";
+import { current } from "@reduxjs/toolkit";
 
 const allTestCases = [
   { score: true },
@@ -40,10 +44,13 @@ interface GameComponentInterface {
 
 const dummyOutput: number[] = [12, 20, 0];
 
+const dummyAttempts: number[] = [0, 0, 0];
+
 const GameComponent: FC<GameComponentInterface> = ({
   tournamentid,
   tournament,
 }) => {
+  const router = useRouter();
   const editorRef = useRef(null);
   const monaco = useMonaco();
 
@@ -57,6 +64,10 @@ const GameComponent: FC<GameComponentInterface> = ({
   const [task, currentTask] = useState<any>();
 
   const [results, changeResults] = useState<any>();
+
+  const [attempts, changeAttempts] = useState<any>(dummyAttempts);
+  const [currentAttempt, changeCurrentAttempt] = useState<number>(0);
+
   useEffect(() => {
     setLoading(true);
 
@@ -67,7 +78,7 @@ const GameComponent: FC<GameComponentInterface> = ({
         setLoading(false);
       });
     } else {
-      getSpecificTournament(tournamentid).then((response: any) => {
+      getSpecificTournamentTask(tournamentid).then((response: any) => {
         currentTask(response);
         changeResults(response.tests);
         setLoading(false);
@@ -78,6 +89,18 @@ const GameComponent: FC<GameComponentInterface> = ({
   function handleEditorDidMount(editor: any, monaco: any) {
     editorRef.current = editor;
   }
+
+  const calculateScore2 = () => {
+    return results
+      ?.map((score: any, i: number) => {
+        if (score.score) {
+          return 25;
+        }
+
+        return 0;
+      })
+      .reduce((acc: any, current: any) => acc + current);
+  };
 
   async function showValue() {
     if (editorRef.current !== null) {
@@ -117,11 +140,39 @@ const GameComponent: FC<GameComponentInterface> = ({
           });
         });
 
-        await makeSubmission(user.id, results, editorRef.current.getValue(), tournamentid)
+        await makeSubmission(
+          user.id,
+          results,
+          editorRef.current.getValue(),
+          tournamentid
+        );
+
+        changeAttempts((prevAttempts: number[]) => {
+          prevAttempts[currentAttempt] = calculateScore2();
+
+          return [...prevAttempts];
+        });
+
+        changeCurrentAttempt((prevAttempt: number) => prevAttempt + 1);
       }
       setTestLoading(false);
     }
   }
+
+  const calculateScore = () => {
+    return results
+      ?.map((score: any, i: number) => {
+        if (score.score) {
+          return 1;
+        }
+
+        if (score.score === undefined) {
+          return -1;
+        }
+        return 0;
+      })
+      .reduce((acc: any, current: any) => acc + current);
+  };
 
   useEffect(() => {
     // do conditional chaining
@@ -132,18 +183,7 @@ const GameComponent: FC<GameComponentInterface> = ({
     }
   }, [monaco]);
 
-  const correct = results
-    ?.map((score: any, i: number) => {
-      if (score.score) {
-        return 1;
-      }
-
-      if (score.score === undefined) {
-        return -1;
-      }
-      return 0;
-    })
-    .reduce((acc: any, current: any) => acc + current);
+  const correct = calculateScore();
 
   return (
     <GameMain
@@ -165,8 +205,7 @@ const GameComponent: FC<GameComponentInterface> = ({
           <></>
         )}
       </ShowGame>
-      <Mover>
-      </Mover>
+      <Mover></Mover>
       {!loading ? (
         <div>
           <Editor
@@ -216,13 +255,35 @@ const GameComponent: FC<GameComponentInterface> = ({
             ) : (
               <Loader />
             )}
-            <SubmitCode onClick={showValue}>Submit</SubmitCode>
+            <div>
+              <SubmitCode
+                onClick={() => {
+                  if (currentAttempt === 1) {
+                    router.push("/play/tournaments");
+                  } else {
+                    showValue();
+                  }
+                }}
+              >
+                {currentAttempt === 1 ? "Return" : "Submit"}
+              </SubmitCode>
+              {/* <AttemptsBox>
+                <Attempt>
+                  1: <span>{currentAttempt === 1 ? attempts[0] : ""}</span>
+                </Attempt>
+                <Attempt>
+                  2: <span>{currentAttempt === 2 ? attempts[1] : ""}</span>
+                </Attempt>
+                <Attempt>
+                  3: <span>{currentAttempt === 3 ? attempts[2] : ""}</span>
+                </Attempt>
+              </AttemptsBox> */}
+            </div>
           </div>
         </div>
       ) : (
         <div>
           <Loader />
-          <L
         </div>
       )}
     </GameMain>

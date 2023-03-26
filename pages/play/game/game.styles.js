@@ -105,3 +105,11 @@ export const TestCase = styled.p`
   justify-content: space-between;
   align-items: center;
 `;
+
+export const AttemptsBox = styled.div`
+  margin-top: 1.2rem;
+`;
+export const Attempt = styled.p`
+  color: var(--text-1);
+  font-size: 2rem;
+`;

@@ -7,8 +7,6 @@ const TournamentID = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  useEffect(() => {}, [router]);
-
   return (
     <GameComponent
       tournament={""}

@@ -53,7 +53,6 @@ export const generateTask = async () => {
       test_cases: data["test_cases"],
     };
 
-    console.log(generatedTask);
     return generatedTask;
   } else {
     return false;
@@ -104,7 +103,25 @@ export const getTournaments = async () => {
   return tournaments;
 };
 
-export const getSpecificTournament = async (tourney_id: any) => {
+export const getSpecificTournament = async (user_id: any) => {
+  let { data: tourney_id, error: newError } = await supabase
+    .from("users")
+    .select("current_tournament")
+    .match({ user_id: user_id });
+
+  console.log(tourney_id);
+  console.log(newError);
+  if (tourney_id === null) return;
+
+  let { data: tournaments, error } = await supabase
+    .from("tournaments")
+    .select("*")
+    .match({ id: tourney_id![0].current_tournament });
+
+  return tournaments;
+};
+
+export const getSpecificTournamentTask = async (tourney_id: any) => {
   let { data: tournaments, error } = await supabase
     .from("tournaments")
     .select("tasks")
@@ -180,6 +197,12 @@ export const addTournament = async (name, id) => {
     .from("tournaments")
     .update({ tasks: `{${coding_task![0].id}}` })
     .eq("id", data![0].id);
+
+  // WE NEED TO ALSO ADD TOURNAMENT TO USER
+  const { data: onceAgain, error: onceAgainE } = await supabase
+    .from("users")
+    .update({ current_tournament: data![0].id })
+    .eq("user_id", id);
 
   return data![0].id;
 };
