@@ -16,10 +16,10 @@ const NavigationComponent: FC<NavigationComponentI> = ({
   isMobile,
   navigationState,
   openNavigation,
-
 }) => {
   const isAuth = useSelector((state: any) => state.userReducer);
-  console.log(isAuth)
+  console.log(isAuth);
+
   return (
     <Navigation
       // @ts-ignore
@@ -27,23 +27,8 @@ const NavigationComponent: FC<NavigationComponentI> = ({
       isMobile={isMobile && isNavBar}
       isNavBar={isNavBar}
     >
-      {true && true !== null ? 
-        page.map((link: string, i: number) => {
-          return (
-            <LinkItem key={i}>
-              <Link
-                href={"/" + link.toLocaleLowerCase()}
-                onClick={() => {
-                  if (openNavigation !== undefined) openNavigation(false);
-                }}
-              >
-                <LinkText>{link}</LinkText>
-              </Link>
-            </LinkItem>
-          );
-        })  
-        :
-          loggedPages.map((link: string, i: number) => {
+      {true && true !== null
+        ? page.map((link: string, i: number) => {
             return (
               <LinkItem key={i}>
                 <Link
@@ -57,7 +42,20 @@ const NavigationComponent: FC<NavigationComponentI> = ({
               </LinkItem>
             );
           })
-      }
+        : loggedPages.map((link: string, i: number) => {
+            return (
+              <LinkItem key={i}>
+                <Link
+                  href={"/" + link.toLocaleLowerCase()}
+                  onClick={() => {
+                    if (openNavigation !== undefined) openNavigation(false);
+                  }}
+                >
+                  <LinkText>{link}</LinkText>
+                </Link>
+              </LinkItem>
+            );
+          })}
     </Navigation>
   );
 };
