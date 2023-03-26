@@ -7,6 +7,10 @@ import Nav from "@/components/Topnav/Nav";
 import PopupToast from "@/components/PopupToast/PopupToast";
 import Footer from "@/components/Footer/Footer";
 import Background from "@/components/Background/Background";
+import React, { useState, useEffect } from "react";
+import { supabase } from "@/functionality/supabase";
+import { useDispatch } from "react-redux";
+import { authUserLogin } from "@/functionality/store/UserAuth";
 
 export default function App({ Component, pageProps }: AppProps) {
   const main = (

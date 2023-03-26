@@ -31,14 +31,14 @@ function isJsonString(str: string) {
   return true;
 }
 
-const generateTask = async () => {
+export const generateTask = async () => {
   const task = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [
       {
         role: "user",
         content:
-          "Generate me a coding task on JS and give the right output so I can compare it later. Give me response back in JSON format with following structure: task, function_signature, code_solution, test_cases. Please give me exact format since I will apply JSON.parse() on it to get all the fields later.",
+          "Generate me a coding task in JavaScript and give the right output so I can compare it later. Give me response back in JSON format with following structure: task, function_signature, code_solution, test_cases. Please give me exact format since I will apply JSON.parse() on it to get all the fields later.",
       },
     ],
   });
@@ -70,4 +70,25 @@ export const generateTournamentTasks = async () => {
   }
 
   return tournamentTasks;
+};
+
+export const getAllUsers = async () => {
+  try {
+    const { data, error } = await supabase.from("users").select("*");
+
+    return data;
+  } catch (error: any) {
+  } finally {
+  }
+};
+export const getCurrentUser = async (user_id: any) => {
+  try {
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .match({ user_id: user_id });
+    return data![0];
+  } catch (error: any) {
+  } finally {
+  }
 };

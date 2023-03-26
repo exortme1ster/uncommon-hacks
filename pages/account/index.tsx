@@ -1,5 +1,11 @@
-import { users } from "@/functionality/data";
-import React, { FC } from "react";
+import { Loader } from "@/components/Loader/Loader";
+import { User, users, user } from "@/functionality/data";
+import { getCurrentUser } from "@/functionality/helpers";
+import React, { FC, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { supabase } from "@/functionality/supabase";
+import { useDispatch } from "react-redux";
+import { authUserLogin } from "@/functionality/store/UserAuth";
 
 import {
   AccountMain,
@@ -9,30 +15,75 @@ import {
 } from "./account.styles";
 
 const Account = () => {
+  const { user } = useSelector((state: any) => state.userReducer);
+
+  const [userTable, setUserTable] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log(session);
+      if (session !== null) {
+        // @ts-ignore
+        setSession(session);
+        dispatch(authUserLogin(session.user));
+      }
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      // @ts-ignore
+      setSession(session);
+
+      dispatch(authUserLogin(session?.user));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (user !== undefined) {
+      setLoading(true);
+      getCurrentUser(user.id).then((response: any) => {
+        setUserTable(response as User);
+        setLoading(false);
+      });
+    } else {
+    }
+  }, [session]);
+
   return (
     <AccountMain>
       <AccountBox>
-        <AccountTitle>Hello, {users[0].user_id}</AccountTitle>
-        <AccountInfo>
-          Created:&nbsp; &nbsp; &nbsp; &nbsp;
-          <span>
-            {users[0].created_at.toLocaleDateString("en-US", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-        </AccountInfo>
-        <AccountInfo>
-          Wins:{" "}
-          <span style={{ textAlign: "end", display: "inline-block" }}>
-            {users[0].wins}
-          </span>
-        </AccountInfo>
-        <AccountInfo>
-          Average score:
-          <span>{users[0].avg_score.toFixed(2)}</span>
-        </AccountInfo>
+        {loading ? (
+          <Loader />
+        ) : userTable !== null && userTable !== undefined ? (
+          <>
+            <AccountTitle>Hello, {user.email}</AccountTitle>
+            <AccountInfo>
+              Created:&nbsp; &nbsp; &nbsp; &nbsp;
+              <span>
+                {new Date(user.created_at).toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </span>
+            </AccountInfo>
+            <AccountInfo>
+              Wins:{" "}
+              <span style={{ textAlign: "end", display: "inline-block" }}>
+                {userTable.wins}
+              </span>
+            </AccountInfo>
+            <AccountInfo>
+              Average score:
+              <span>{userTable.avg_score.toFixed(2)}</span>
+            </AccountInfo>
+          </>
+        ) : (
+          <AccountTitle>Log in!</AccountTitle>
+        )}
       </AccountBox>
     </AccountMain>
   );

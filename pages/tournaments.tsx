@@ -39,7 +39,7 @@ export default function Tournaments() {
         </>
       ) : (
         <div>
-          {/* @ts-ignore */}
+          {/* //@ts-ignore */}
           <h1 style={{ color: "white", marginTop: "20px" }}>
             {tasks[0]?.task}
           </h1>

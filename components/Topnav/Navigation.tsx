@@ -1,10 +1,17 @@
-import { NavBar, HomePage, Navigation, LinkItem, LinkText } from "./Nav.styles";
+import {
+  NavBar,
+  HomePage,
+  Navigation,
+  LinkItem,
+  LinkText,
+  Logout,
+} from "./Nav.styles";
 import Link from "next/link";
 import { FC, useState, useEffect } from "react";
 import { page, loggedPages } from "@/functionality/data";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { authUserLogout } from "@/functionality/store/UserAuth";
-
+import { useRouter } from "next/router";
 interface NavigationComponentI {
   isNavBar: boolean;
   isMobile: boolean;
@@ -19,9 +26,8 @@ const NavigationComponent: FC<NavigationComponentI> = ({
   openNavigation,
 }) => {
   const dispatch = useDispatch();
-  const {isAuth} = useSelector((state: any) => state.userReducer);
-
-  console.log(isAuth)
+  const { isAuth } = useSelector((state: any) => state.userReducer);
+  const router = useRouter();
 
   return (
     <Navigation
@@ -30,45 +36,50 @@ const NavigationComponent: FC<NavigationComponentI> = ({
       isMobile={isMobile && isNavBar}
       isNavBar={isNavBar}
     >
-      {isAuth
-        ? 
+      {isAuth ? (
         <>
-            {   
-                loggedPages.map((link: string, i: number) => {
-                return (
-                  <>
-                    <LinkItem key={i}>
-                    <Link
-                      href={"/" + link.toLocaleLowerCase()}
-                      onClick={() => {
-                        if (openNavigation !== undefined) openNavigation(false);
-                      }}
-                    >
-                      <LinkText>{link}</LinkText>
-                    </Link>
-                  </LinkItem>
-                  </>
-                );
-              })}
-              {/* @ts-ignore */}
-              <button onClick={() => dispatch(authUserLogout())}>
-                  Logout
-              </button>
-        </>
-        : page.map((link: string, i: number) => {
+          <Logout
+            onClick={() => {
+              router.push("/");
+              dispatch(authUserLogout());
+            }}
+          >
+            Logout
+          </Logout>
+          {loggedPages.map((link: string, i: number) => {
             return (
-              <LinkItem key={i}>
-                <Link
-                  href={"/" + link.toLocaleLowerCase()}
-                  onClick={() => {
-                    if (openNavigation !== undefined) openNavigation(false);
-                  }}
-                >
-                  <LinkText>{link}</LinkText>
-                </Link>
-              </LinkItem>
+              <>
+                <LinkItem key={i}>
+                  <Link
+                    href={"/" + link.toLocaleLowerCase()}
+                    onClick={() => {
+                      if (openNavigation !== undefined) openNavigation(false);
+                    }}
+                  >
+                    <LinkText>{link}</LinkText>
+                  </Link>
+                </LinkItem>
+              </>
             );
           })}
+          {/* @ts-ignore */}
+        </>
+      ) : (
+        page.map((link: string, i: number) => {
+          return (
+            <LinkItem key={i}>
+              <Link
+                href={"/" + link.toLocaleLowerCase()}
+                onClick={() => {
+                  if (openNavigation !== undefined) openNavigation(false);
+                }}
+              >
+                <LinkText>{link}</LinkText>
+              </Link>
+            </LinkItem>
+          );
+        })
+      )}
     </Navigation>
   );
 };

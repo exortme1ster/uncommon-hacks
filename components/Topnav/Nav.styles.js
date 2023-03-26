@@ -6,15 +6,34 @@ export const NavBar = styled.nav`
   justify-content: space-between;
   padding: 1.2rem;
   background-color: var(--primary);
+  align-items: center;
   border-bottom: 2px solid var(--border);
 `;
 
+export const Logout = styled.button`
+  background-color: var(--brand8);
+
+  color: var(--brand2);
+  padding: 0.6rem 2.4rem;
+  height: 35px;
+  border: none;
+  font-size: 2rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover {
+    background-color: var(--brand10);
+  }
+  align-self: center;
+`;
 export const HomePage = styled.div``;
 
 export const Navigation = styled.ul`
   display: flex;
   list-style: none;
   gap: 2.4rem;
+
+
   flex-direction ${(props) =>
     props.isNavBar && !props.isMobile ? "row" : "column"};
 

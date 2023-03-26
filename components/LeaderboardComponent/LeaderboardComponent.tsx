@@ -1,5 +1,13 @@
-import { User, users, usersSBS, usersSBW } from "@/functionality/data";
+import {
+  dummyUsers,
+  User,
+  users,
+  usersSBS,
+  usersSBW,
+} from "@/functionality/data";
 import React, { FC, useEffect, useState } from "react";
+
+import { useSelector } from "react-redux";
 
 import {
   LeaderboardGrid,
@@ -9,6 +17,8 @@ import {
   LeaderboardRow,
   Sorter,
 } from "./leaderboard.styles";
+import { getAllUsers } from "@/functionality/helpers";
+import { Loader } from "../Loader/Loader";
 
 interface LeaderboardComponentInterface {
   isGlobal: boolean;
@@ -17,18 +27,19 @@ interface LeaderboardComponentInterface {
 const LeaderboardComponent: FC<LeaderboardComponentInterface> = ({
   isGlobal,
 }) => {
-  // const [allUsers, changeAllUsers] = useState(usersSBS);
+  const [allUsers, changeAllUsers] = useState<User[]>(dummyUsers);
   const [sortByWins, changeSortByWins] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   changeAllUsers(() => {
-  //     if (sortByWins) {
-  //       return usersSBW;
-  //     } else {
-  //       return usersSBS;
-  //     }
-  //   });
-  // }, []);
+  const { isAuth } = useSelector((state: any) => state.userReducer);
+
+  useEffect(() => {
+    setLoading(true);
+    getAllUsers().then((response) => {
+      changeAllUsers(response as User[]);
+      setLoading(false);
+    });
+  }, []);
 
   return (
     <LeaderboardGrid>
@@ -46,15 +57,19 @@ const LeaderboardComponent: FC<LeaderboardComponentInterface> = ({
         <LeaderboardColumn>score</LeaderboardColumn>
       </LeaderboardTitleSection>
       <LeaderboardMainSection>
-        {usersSBW.map((user: User, i: number) => {
-          return (
-            <LeaderboardRow key={i}>
-              <LeaderboardColumn>{user.user_id}</LeaderboardColumn>
-              <LeaderboardColumn>{user.wins}</LeaderboardColumn>
-              <LeaderboardColumn>{user.avg_score}</LeaderboardColumn>
-            </LeaderboardRow>
-          );
-        })}
+        {loading ? (
+          <Loader />
+        ) : (
+          allUsers.map((user: User, i: number) => {
+            return (
+              <LeaderboardRow key={i}>
+                <LeaderboardColumn>{user.user_id}</LeaderboardColumn>
+                <LeaderboardColumn>{user.wins}</LeaderboardColumn>
+                <LeaderboardColumn>{user.avg_score}</LeaderboardColumn>
+              </LeaderboardRow>
+            );
+          })
+        )}
       </LeaderboardMainSection>
     </LeaderboardGrid>
   );

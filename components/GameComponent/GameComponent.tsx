@@ -17,6 +17,8 @@ import Editor, { useMonaco } from "@monaco-editor/react";
 import { users } from "@/functionality/data";
 import { Check } from "@/assets/Check";
 import { Close } from "@/assets/Close";
+import { generateTask } from "@/functionality/helpers";
+import { Loader } from "../Loader/Loader";
 
 const allTestCases = [
   { score: true },
@@ -35,7 +37,19 @@ const GameComponent: FC<GameComponentInterface> = ({ tournamentid }) => {
 
   const [moveBackground, setMoveBackground] = useState(0);
 
+  const [loading, setLoading] = useState(false);
+
+  const [task, currentTask] = useState<any>();
+
+  console.log(task);
   console.log(tournamentid);
+  useEffect(() => {
+    setLoading(true);
+    generateTask().then((response: any) => {
+      currentTask(response);
+      setLoading(false);
+    });
+  }, []);
 
   function handleEditorDidMount(editor: any, monaco: any) {
     editorRef.current = editor;
@@ -73,9 +87,10 @@ const GameComponent: FC<GameComponentInterface> = ({ tournamentid }) => {
       <ShowGame>
         <ShowGameTitle>Hello, lol</ShowGameTitle>
         <ShowGameDescription>
-          ChatGPT generated a coding question for you ;)
+          ChatGPT {loading ? "is generating" : "generated"} a coding question
+          for you ;)
         </ShowGameDescription>
-        <ShowGameCode>asdsoij</ShowGameCode>
+        {!loading ? <ShowGameCode>{task?.task}</ShowGameCode> : <></>}
       </ShowGame>
       <Mover>
         {/* <Handle>
@@ -99,42 +114,46 @@ const GameComponent: FC<GameComponentInterface> = ({ tournamentid }) => {
           </span>
         </Handle> */}
       </Mover>
-      <div>
-        <Editor
-          onMount={handleEditorDidMount}
-          defaultLanguage="javascript"
-          height="80vh"
-          defaultValue="// some comment"
-          theme={"vs-dark"}
-        />
+      {!loading ? (
+        <div>
+          <Editor
+            onMount={handleEditorDidMount}
+            defaultLanguage="javascript"
+            height="80vh"
+            defaultValue={task?.function_signature}
+            theme={"vs-dark"}
+          />
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr",
-            justifyContent: "center",
-            alignItems: "center",
-            alignContent: "center",
-            height: "auto",
-            padding: "0 0 0 0",
-            gap: "4.8rem",
-          }}
-        >
-          <TestCases>
-            <TestCaseTitle>
-              Test Cases {correct}/{allTestCases.length}
-            </TestCaseTitle>
-            {allTestCases.map((testCase: any, i: number) => {
-              return (
-                <TestCase>
-                  Test Case {i + 1} {testCase.score ? <Check /> : <Close />}
-                </TestCase>
-              );
-            })}
-          </TestCases>
-          <SubmitCode onClick={showValue}>Submit</SubmitCode>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "2fr 1fr",
+              justifyContent: "center",
+              alignItems: "center",
+              alignContent: "center",
+              height: "auto",
+              padding: "0 0 0 0",
+              gap: "4.8rem",
+            }}
+          >
+            <TestCases>
+              <TestCaseTitle>
+                Test Cases {correct}/{task?.test_cases?.length}
+              </TestCaseTitle>
+              {task?.test_cases?.map((testCase: any, i: number) => {
+                return (
+                  <TestCase>
+                    Test Case {i + 1} {testCase.score ? <Check /> : <Close />}
+                  </TestCase>
+                );
+              })}
+            </TestCases>
+            <SubmitCode onClick={showValue}>Submit</SubmitCode>
+          </div>
         </div>
-      </div>
+      ) : (
+        <Loader />
+      )}
     </GameMain>
   );
 };

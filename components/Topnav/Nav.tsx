@@ -12,24 +12,6 @@ const Nav = () => {
   const dispatch = useDispatch();
   const [isMobile, changeMobile] = useState(false);
   const [navigationState, openNavigation] = useState(false);
-  const [session, setSession] = useState(null)
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log(session)
-      if(session !== null) {
-        // @ts-ignore
-        setSession(session)
-        dispatch(authUserLogin(session?.user))
-      }
-    })
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      // @ts-ignore
-      setSession(session)
-    })
-  }, [])
-
 
   useEffect(() => {
     let q1 = window.matchMedia("(max-width: 54em)");

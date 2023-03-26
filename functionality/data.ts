@@ -1,4 +1,4 @@
-export const title = "Hack Duel";
+export const title = "Hack Duels";
 export const year = new Date().getFullYear();
 
 export const page = ["Login", "Play", "Account", "Leaderboard"];
@@ -18,7 +18,7 @@ export const user: User = {
   wins: 0,
   avg_score: 0,
 };
-let dummyUsers: User[] = [];
+export let dummyUsers: User[] = [];
 
 for (let i = 0; i < 10; ++i) {
   dummyUsers.push({

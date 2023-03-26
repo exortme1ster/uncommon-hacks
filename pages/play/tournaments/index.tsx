@@ -24,7 +24,6 @@ import {
   TournamentsDescription,
   MyTournament,
   PlayButtonDiv,
-  Play,
 } from "./tournaments.styles";
 import LeaderboardComponent from "@/components/LeaderboardComponent/LeaderboardComponent";
 import Link from "next/link";
