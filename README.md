@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Introducing coding duels
 
-We were inspired by the leetcode, we think it is really hard to make something like that so we gave a shot! We are going to integrate this part to the ![teameights](https://willowy-moonbeam-13cda4.netlify.app) soon. We did this project with NextJS, TS, Supabase and current version is able to compile code, support real time events and create users / tournaments
+We were inspired by the leetcode, we think it is really hard to make something like that so we gave a shot! We are going to integrate this part to the [teameights](https://willowy-moonbeam-13cda4.netlify.app) soon. We did this project with NextJS, TS, Supabase and current version is able to compile code, support real time events and create users / tournaments
 
 
 ## Getting Started
